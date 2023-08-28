@@ -30,6 +30,12 @@ https://templatemo.com/tm-570-chain-app-dev
     <link rel="stylesheet" href="assets/css/templatemo-chain-app-dev.css">
     <link rel="stylesheet" href="assets/css/animated.css">
     <link rel="stylesheet" href="assets/css/owl.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+<style>
+  body {font-family: 'Prompt', sans-serif;}
+</style>
 
   </head>
 
@@ -50,7 +56,7 @@ https://templatemo.com/tm-570-chain-app-dev
   <!-- ***** Preloader End ***** -->
 
   <!-- ***** Header Area Start ***** -->
-  <header class="header-area header-sticky wow slideInDown" data-wow-duration="0.75s" data-wow-delay="0s">
+  <header id="top" class="header-area header-sticky wow slideInDown" data-wow-duration="0.75s" data-wow-delay="0s">
     <div class="container">
       <div class="row">
         <div class="col-12">
@@ -63,12 +69,13 @@ https://templatemo.com/tm-570-chain-app-dev
             <!-- ***** Menu Start ***** -->
             <ul class="nav">
               <li class="scroll-to-section"><a href="#top" class="active">หน้าแรก</a></li>
-              <li class="scroll-to-section"><a href="#services">Services</a></li>
+              
               <li class="scroll-to-section"><a href="#leave">ประวัติการลา</a></li>
+              <li class="scroll-to-section"><a href="#newsletter">newsletter</a></li>
               <li>
                 <div class="gradient-button">
-                  <a  id="modal_trigger" href="#" @click="test()" >
-                    <i class="fa fa-sign-in-alt"></i> Sign In Now 
+                  <a  data-bs-toggle="modal" data-bs-target="#exampleModal" @click="leave_new()" >
+                    <i class="far fa-edit"></i> เขียนใบลา
                   </a>
                 </div>
               </li> 
@@ -83,9 +90,115 @@ https://templatemo.com/tm-570-chain-app-dev
     </div>
   </header>
   <!-- ***** Header Area End ***** -->  
+
+    <!-- Button trigger modal -->
+    <div class="row">       
+      
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">บันทึกการลา : {{leave.cat}}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form @submit.prevent="onSubmit()">
+                <div class="input-group mb-5">
+                  <label class="input-group-text" for="cat">เลือกประเภทการลา</label>               
+                  <select class="form-select" id="cat" v-model="leave.cat">
+                    <option v-for="lc in leave_cat" :value="lc">{{lc}}</option>
+                  </select>
+                  
+                </div>
+                
+                <div class="row mb-3 justify-content-between" v-if="leave.cat == 'ลาพักผ่อน'">
+                  <div class="col-2">
+                    <label for="pp_ss_1" >วันลาพักผ่อนสะสม</label>
+                    <input type="number" class="form-control" id="pp_ss_1" placeholder="วันลาพักผ่อนสะสม" v-model="leave.pp_ss_num">
+                  </div>
+                  <div class="col-2">
+                    <label for="pp_ss_limit">วันลาคงเหลือ</label>
+                    <input type="number" disabled class="form-control" id="pp_ss_limit" placeholder="วันลาคงเหลือ" v-model="leave.pp_ss_limit">
+                  </div>
+                </div>
+  
+                <div class="row mb-5">
+                  <div class="col">
+                    <label for="begin" >ลาตั้งแต่วันที่</label>
+                    <input type="date" class="form-control" id="begin" placeholder="ลาตั้งแต่วันที่" v-model="leave.begin" @change="leave_begin_end_ch()">
+                  </div>
+                  <div class="col">
+                    <label for="end" >ถึงวันที่</label>
+                    <input type="date" class="form-control" id="end" placeholder="ถึงวันที่" v-model="leave.end" @change="leave_begin_end_ch()">
+                  </div>
+                  <div class="col-2">
+                    <label for="l_num">จำนวนวัน</label>
+                    <input type="number" min="0" class="form-control" id="l_num" placeholder="จำนวนวัน" v-model="leave.l_num">
+                  </div>
+                </div>
+  
+                <div v-if="leave.cat == 'ลาป่วย' || leave.cat == 'ลากิจส่วนตัว'">
+                  <div class="row mb-5" >
+                    <div class="col">
+                      <label for="be" >เนื่องจาก</label>
+                      <input type="text" class="form-control" id="be" placeholder="เนื่องจาก" v-model="leave.be">
+    
+                    </div>
+                  </div>
+                  
+                  <div class="row mb-3">
+                    <div class="col">
+                      <label for="begin_old">ลาครั้งสุดท้ายตั้งแต่</label>
+                      <input type="date" class="form-control" id="begin_old" placeholder="ลาครั้งสุดท้ายตั้งแต่" v-model="leave.begin_old">
+                    </div>
+                    <div class="col">
+                      <label for="end_old" >ลาครั้งสุดถึงวันที่</label>
+                      <input type="date" class="form-control" id="end_old" placeholder="ลาครั้งสุดถึงวันที่" v-model="leave.end_old">
+                    </div>
+                    <div class="col-2">
+                      <label for="l_num_old">จำนวนวัน</label>
+                      <input type="number" min="0" class="form-control" id="l_num_old" placeholder="จำนวนวัน" v-model="leave.l_num_old">
+                    </div>
+                  </div>
+                </div>
+  
+                <div class="row mb-4">
+                  <div class="col-2">
+                    <label for="l_old_sum">เคยลาแล้ว</label>
+                    <input type="number" min="0" class="form-control" placeholder="เคยลาแล้ว" v-model="leave.l_old_sum">
+                  </div>
+                  <div class="col">
+                    <label for="address">ระหว่างลาติดต่อได้ที่</label>
+                    <input type="text" class="form-control" id="address" placeholder="ระหว่างลาติดต่อได้ที่" v-model="leave.address" >
+                  </div>
+                  <div class="col">
+                    <label for="comment">หมายเหตุ</label>
+                    <input type="text" class="form-control" id="comment" placeholder="หมายเหตุ" v-model="leave.comment" >
+                  </div>
+                </div>
+  
+  
+  
+                {{leave}}
+                {{sms}}
+                <div class="row">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+  
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   
 
-  <div class="main-banner wow fadeIn" id="top" data-wow-duration="1s" data-wow-delay="0.5s">
+  <div class="main-banner wow fadeIn" data-wow-duration="1s" data-wow-delay="0.5s">
     <div class="container">
       <div class="row">
         <div class="col-lg-12">
@@ -99,10 +212,13 @@ https://templatemo.com/tm-570-chain-app-dev
                   </div>
                   <div class="col-lg-12">
                     <div class="white-button first-button scroll-to-section">
-                      <a href="#contact">Free Quote <i class="fab fa-apple"></i></a>
+                      <a  data-bs-toggle="modal" data-bs-target="#exampleModal" @click="leave_new()">
+                        <i class="far fa-edit"></i> เขียนใบลา 
+                      </a>
                     </div>
-                    <div class="white-button scroll-to-section">
-                      <a href="#contact">Free Quote <i class="fab fa-google-play"></i></a>
+                    
+                    <div class="white-button scroll-to-section ">
+                      <a href="">ประวัติการลา <i class="fab fa-apple"></i></a>
                     </div>
                   </div>
                 </div>
@@ -116,58 +232,13 @@ https://templatemo.com/tm-570-chain-app-dev
           </div>
         </div>
       </div>
+      
     </div>
   </div>
+  
 
-  <div id="services" class="section">
-    
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-3">
-          <div class="service-item first-service">
-            <div class="icon"></div>
-            <h4>App Maintenance</h4>
-            <p>You are not allowed to redistribute this template ZIP file on any other website.</p>
-            <div class="text-button">
-              <a href="#">Read More <i class="fa fa-arrow-right"></i></a>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="service-item second-service">
-            <div class="icon"></div>
-            <h4>Rocket Speed of App</h4>
-            <p>You are allowed to use the Chain App Dev HTML template. Feel free to modify or edit this layout.</p>
-            <div class="text-button">
-              <a href="#">Read More <i class="fa fa-arrow-right"></i></a>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="service-item third-service">
-            <div class="icon"></div>
-            <h4>Multi Workflow Idea</h4>
-            <p>If this template is beneficial for your work, please support us <a rel="nofollow" href="https://paypal.me/templatemo" target="_blank">a little via PayPal</a>. Thank you.</p>
-            <div class="text-button">
-              <a href="#">Read More <i class="fa fa-arrow-right"></i></a>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="service-item fourth-service">
-            <div class="icon"></div>
-            <h4>24/7 Help &amp; Support</h4>
-            <p>Lorem ipsum dolor consectetur adipiscing elit sedder williamsburg photo booth quinoa and fashion axe.</p>
-            <div class="text-button">
-              <a href="#">Read More <i class="fa fa-arrow-right"></i></a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-  <div id="leave" class="section mt-5">
+  
+  <div id="leave">
     <div class="container">
       <div  class="row">
         <div>ประวัติการลา</div>
@@ -186,6 +257,8 @@ https://templatemo.com/tm-570-chain-app-dev
       </div>      
     </div>
   </div>
+
+ 
   
 
   
@@ -268,44 +341,6 @@ https://templatemo.com/tm-570-chain-app-dev
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script>
-    const app = Vue.createApp({
-        data() {
-            return {
-                message: "Hello World!" ,
-                datas: '',
-                loading: false
-            }
-        },
-        mounted(){
-            this.get_data() 
-        },
-        methods: {
-            get_data() {
-                this.loading = true;
-                axios.get('./api/index/bila.php')
-                    .then(response => {
-                        // handle success
-                        this.datas = response.data.datas
-                        this.test()
-                    })
-                    .catch(error =>  {
-                        // handle error
-                        console.log(error);
-                    })
-                    .finally( ()=> {
-                        // always executed
-                        this.loading = false;
-                    });
-            },
-            test(){
-              console.log('KO.')
-            }
-        }
-    })
-
-   app.mount('#app')
-
-  </script>
+    <script src="./index.js"></script>
 </body>
 </html>
