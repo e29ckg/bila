@@ -3,15 +3,26 @@ const app = Vue.createApp({
         return {
             message: "Hello World!" ,
             datas: '',
+            profile: '',
             leave_cat :['ลาป่วย','ลากิจส่วนตัว','ลาพักผ่อน'],
             leave : {
                 id:'',
                 cat:'ลาป่วย',
-                begin:'',
-                end:'',
-                pp_ss_num:'',
-                pp_ss_limit:'',
-                l_num:'',
+                date_begin:'',
+                date_end:'',
+                date_total:'',
+                due:'',
+                dateO_begin:'',
+                dateO_end:'',
+                dateO_total:'',
+                address:'',
+                t1:'',
+                t2:'',
+                t3:'',
+                comment:'',
+                po:'',
+                bigbooss:'',
+                date_create:'',
                 act:'',
             },
             leave_old : '',
@@ -34,6 +45,7 @@ const app = Vue.createApp({
                 .then(response => {
                     // handle success
                     this.datas = response.data.datas
+                    this.profile = response.data.datas.profile
                 })
                 .catch(error =>  {
                     // handle error
@@ -51,6 +63,25 @@ const app = Vue.createApp({
                 .then(response => {
                     // handle success
                     this.leave_old = response.data.datas
+                    if(this.leave.cat === 'ลาป่วย' || this.leave.cat === 'ลากิจส่วนตัว'){
+                        this.leave.dateO_begin = this.leave_old.date_begin
+                        this.leave.dateO_end = this.leave_old.date_end
+                        this.leave.dateO_total = this.leave_old.date_total
+                        this.leave.p1 = 0
+                        this.leave.p2 = 0
+                        this.leave.t1 = parseFloat(this.leave_old.t3)
+                        this.leave.address = this.leave_old.address
+                    }
+                    if(this.leave.cat === 'ลาพักผ่อน'){
+                        this.leave.dateO_begin = ''
+                        this.leave.dateO_end = ''
+                        this.leave.dateO_total = ''
+                        this.leave.due = ''
+                        this.leave.p1 = parseFloat(this.leave_old.p1)
+                        this.leave.p2 = (parseFloat(this.leave_old.p1) + 10) - parseFloat(this.leave_old.t3)
+                        this.leave.t1 = parseFloat(this.leave_old.t3)
+                        this.leave.address = this.leave_old.address
+                    }
                 })
                 .catch(error =>  {
                     // handle error
@@ -61,26 +92,31 @@ const app = Vue.createApp({
                     this.loading = false;
                 });
         },
-        leave_cat_ch(){},
-        leave_begin_end_ch(){
-            if(this.leave.begin !== '' && this.leave.end !== ''){
-                var date1 = new Date(this.leave.begin);
-                var date2 = new Date(this.leave.end);
+        
+        leave_cat_ch(){
+            this.get_leave_old()
+        },
+        input_date_begin_end_ch(){
+            if(this.leave.date_begin !== '' && this.leave.date_end !== ''){
+                var date1 = new Date(this.leave.date_begin);
+                var date2 = new Date(this.leave.date_end);
     
                 var diffTime = date2.getTime() - date1.getTime();
-                this.leave.l_num = (diffTime / (1000 * 3600 * 24)) + 1;
+                this.leave.date_total = (diffTime / (1000 * 3600 * 24)) + 1;
 
-                if(this.leave.l_num < 1){
-                    this.leave.end  = this.leave.begin
+                if(this.leave.date_total < 1){
+                    this.leave.date_begin = ''
+                    this.leave.date_end  = ''
+                    this.leave.date_total = 0
                     alert('ลาถึงวันที่ ต้องมากกว่าวันเริ่มต้น')
                 }
-                console.log(this.leave.l_num)
+                console.log(this.leave.date_total)
             }else{
-                this.leave.l_num = 0
+                this.leave.date_total = 0
             }
         },
         leave_new(){
-
+            this.get_leave_old()
         },
         onSubmit(){},
         test(){
