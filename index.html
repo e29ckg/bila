@@ -40,7 +40,7 @@ https://templatemo.com/tm-570-chain-app-dev
   </head>
 
 <body>
-  <div id="app">
+  <div id="app" >
   
   <!-- ***** Preloader Start ***** -->
   <div id="js-preloader" class="js-preloader" v-if="loading">
@@ -54,9 +54,12 @@ https://templatemo.com/tm-570-chain-app-dev
     </div>
   </div>
   <!-- ***** Preloader date_end ***** -->
+ 
+  <div id="top">
 
+  </div>
   <!-- ***** Header Area Start ***** -->
-  <header id="top" class="header-area header-sticky wow slideInDown" data-wow-duration="0.75s" data-wow-delay="0s">
+  <header class="header-area header-sticky wow slideInDown" data-wow-duration="0.75s" data-wow-delay="0s">
     <div class="container">
       <div class="row">
         <div class="col-12">
@@ -73,7 +76,7 @@ https://templatemo.com/tm-570-chain-app-dev
               <li class="scroll-to-section"><a href="#leave">ประวัติการลา</a></li>
               <li>
                 <div class="gradient-button">
-                  <a  data-bs-toggle="modal" data-bs-target="#exampleModal" @click="leave_new()" >
+                  <a  href="#" @click="leave_new()" >
                     <i class="far fa-edit"></i> เขียนใบลา
                   </a>
                 </div>
@@ -92,7 +95,7 @@ https://templatemo.com/tm-570-chain-app-dev
 
     <!-- Button trigger modal -->
     <div class="row">       
-      
+      <button hidden class=" "data-bs-toggle="modal" data-bs-target="#exampleModal" ref="bt_open_modal" >bt</button>
       <!-- Modal -->
       <div class="modal fade" id="exampleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
@@ -118,7 +121,7 @@ https://templatemo.com/tm-570-chain-app-dev
                   </div>
                   <div class="col-2">
                     <label for="p2">วันลาคงเหลือ</label>
-                    <input type="number" disabled class="form-control" id="p2" placeholder="วันลาคงเหลือ" v-model="leave.p2">
+                    <input type="number" disabled class="form-control" id="p2" placeholder="วันลาคงเหลือ" :value="leave.p2 - leave.t1">
                   </div>
                 </div>
   
@@ -179,8 +182,8 @@ https://templatemo.com/tm-570-chain-app-dev
   
   
   
-                {{leave}}
-                {{leave_old}}
+                <!-- {{leave}}
+                {{leave_old}} -->
                 <div class="row">
                   <button type="submit" class="btn btn-primary">Submit</button>
   
@@ -206,12 +209,12 @@ https://templatemo.com/tm-570-chain-app-dev
               <div class="left-content show-up header-text wow fadeInLeft" data-wow-duration="1s" data-wow-delay="1s">
                 <div class="row">
                   <div class="col-lg-12">
-                    <h2>Get The Latest App From App Stores</h2>
-                    <p>Chain App Dev is an app landing page HTML5 template based on Bootstrap v5.1.3 CSS layout provided by TemplateMo, a great website to download free CSS templates.</p>
+                    <h2>โปรแกรมเขียนใบลา</h2>
+                    <p>สวัสดี คุณ{{profile.name +' '+ profile.sname}} .</p>
                   </div>
                   <div class="col-lg-12">
                     <div class="white-button first-button scroll-to-section">
-                      <a  data-bs-toggle="modal" data-bs-target="#exampleModal" @click="leave_new()">
+                      <a href="#" @click="leave_new()">
                         <i class="far fa-edit"></i> เขียนใบลา 
                       </a>
                     </div>
@@ -234,62 +237,60 @@ https://templatemo.com/tm-570-chain-app-dev
       
     </div>
   </div>
-  
 
-  
-  <!-- <section id="leave">
+  <div id="leave" class="the-clients">
     <div class="container">
-      <div  class="row mt-10">
-        <div>ประวัติการลา</div>
-        <table class="table">
-          <tr>
-            <td>ttt</td>
-            <td>ttt</td>
-            <td>ttt</td>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>2</td>
-            <td>3</td>
-          </tr>
-        </table>
-
-        {{profile}}
-      </div>      
-    </div>
-  </section> -->
-
- 
-  
-
-  
-  <footer id="leave">
-    <div class="container">      
       <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+          <div class="section-heading">
+            <h1>ประวัติการลา</h1>
+            <img src="assets/images/heading-line-dec.png" alt="">
+            <p>..</p>
+          </div>
+        </div>
         <div class="col-lg-12">
           <table class="table">
-            <tr>
-              <td>ttt</td>
-              <td>ttt</td>
-              <td>ttt</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>2</td>
-              <td>3</td>
-            </tr>
+            <thead>
+                <td>รหัสใบลา</td>
+                <td>ปีงบประมาณ</td>
+                <td>ประเภทการลา</td>
+                <td>ระหวางวันที่</td>
+                <td>จำนวนวัน</td>
+                <td>Act</td>
+            </thead>
+            <tbody>
+              <tr v-for="b,index in datas">
+                <td>{{b.running}}</td>
+                <td>{{fiscalyear(b.date_begin)}}</td>
+                <td>{{b.cat}}</td>
+                <td>{{convertToThaiDate(b.date_begin)}} - {{convertToThaiDate(b.date_end)}}</td>
+                <td>{{b.date_total}}</td>
+                <td>
+                  <button class="btn btn-success" @click="b_update(index)">แก้ไข</button>
+                  <button class="btn ">พิมพ์</button>
+                  <button>ยกเลิกการลา</button>
+                </td>
+              </tr>
+
+            </tbody>
+            
           </table>
-          
+
         </div>
-        
+      </div>
+    </div>
+  </div>
+  
+  
+  <footer id="newsletter">
+    <div class="container">
+      
+      <div class="row">
         
         <div class="col-lg-12">
           <div class="copyright-text">
-            <p>Copyright © 2022 Chain App Dev Company. All Rights Reserved. 
-          <br>Design: <a href="https://templatemo.com/" target="_blank" title="css templates">TemplateMo</a><br>
-        
-          Distributed By: <a href="https://themewagon.com/" target="_blank" title="Bootstrap Template World">ThemeWagon</a>
-        </p>
+            <p>Copyright © 2022 Chain App Dev Company. All Rights Reserved. lo 
+          <br>Design: <a href="https://templatemo.com/" target="_blank" title="css templates">TemplateMo</a></p>
           </div>
         </div>
       </div>

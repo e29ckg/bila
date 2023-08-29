@@ -44,7 +44,7 @@ const app = Vue.createApp({
             axios.get('./api/index/bila.php')
                 .then(response => {
                     // handle success
-                    this.datas = response.data.datas
+                    this.datas = response.data.datas.bilas
                     this.profile = response.data.datas.profile
                 })
                 .catch(error =>  {
@@ -117,10 +117,56 @@ const app = Vue.createApp({
         },
         leave_new(){
             this.get_leave_old()
+            this.leave.date_begin = ''
+            this.leave.date_end  = ''
+            this.leave.date_total = 0
+            this.$refs.bt_open_modal.click()
+        },
+        b_update(idx){
+            console.log('b_update.' + idx)
+            this.leave = this.datas[idx]
+            this.$refs.bt_open_modal.click()
+
         },
         onSubmit(){},
-        test(){
-          console.log('KO.')
+        convertToThaiDate(gregorianDate) {
+            // Parse the Gregorian date
+            const parts = gregorianDate.split('-');
+            const year = parseInt(parts[0]);
+            const month = parseInt(parts[1]);
+            const day = parseInt(parts[2]);
+          
+            // Add 543 years to the year
+            const thaiYear = year - 2500 + 543;
+          
+            // Define an array of Thai month names
+            const thaiMonths = [
+              'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน',
+              'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม',
+              'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+            ];
+            const thaiMonthsAbbreviated = [
+                'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.',
+                'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.',
+                'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
+              ];
+          
+            // Format the Thai date
+            const thaiDate = `${day} ${thaiMonthsAbbreviated[month - 1]} ${thaiYear}`;
+          
+            return thaiDate;
+        },
+        fiscalyear(gregorianDate){
+            const parts = gregorianDate.split('-');
+            const year = parseInt(parts[0]);
+            const month = parseInt(parts[1]);
+            const thaiYear = year + 543;
+
+            if(month >= 10){
+                return thaiYear + 1
+            }
+            
+            return thaiYear ;
         }
     }
 })
