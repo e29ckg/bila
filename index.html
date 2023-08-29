@@ -53,7 +53,7 @@ https://templatemo.com/tm-570-chain-app-dev
       </div>
     </div>
   </div>
-  <!-- ***** Preloader End ***** -->
+  <!-- ***** Preloader date_end ***** -->
 
   <!-- ***** Header Area Start ***** -->
   <header id="top" class="header-area header-sticky wow slideInDown" data-wow-duration="0.75s" data-wow-delay="0s">
@@ -65,14 +65,12 @@ https://templatemo.com/tm-570-chain-app-dev
             <a href="index.html" class="logo">
               <img src="assets/images/logo.png" alt="Chain App Dev">
             </a>
-            <!-- ***** Logo End ***** -->
+            <!-- ***** Logo date_end ***** -->
             <!-- ***** Menu Start ***** -->
             <ul class="nav">
               <li class="scroll-to-section"><a href="#top" class="active">หน้าแรก</a></li>
               
               <li class="scroll-to-section"><a href="#leave">ประวัติการลา</a></li>
-              <li class="scroll-to-section"><a href="#newsletter">newsletter</a></li>
-              <li class="scroll-to-section"><a href="#" @click="get_leave_old()">test</a></li>
               <li>
                 <div class="gradient-button">
                   <a  data-bs-toggle="modal" data-bs-target="#exampleModal" @click="leave_new()" >
@@ -84,13 +82,13 @@ https://templatemo.com/tm-570-chain-app-dev
             <a class='menu-trigger'>
                 <span>Menu</span>
             </a>
-            <!-- ***** Menu End ***** -->
+            <!-- ***** Menu date_end ***** -->
           </nav>
         </div>
       </div>
     </div>
   </header>
-  <!-- ***** Header Area End ***** -->  
+  <!-- ***** Header Area date_end ***** -->  
 
     <!-- Button trigger modal -->
     <div class="row">       
@@ -107,7 +105,7 @@ https://templatemo.com/tm-570-chain-app-dev
               <form @submit.prevent="onSubmit()">
                 <div class="input-group mb-5">
                   <label class="input-group-text" for="cat">เลือกประเภทการลา</label>               
-                  <select class="form-select" id="cat" v-model="leave.cat">
+                  <select class="form-select" id="cat" v-model="leave.cat" @change="leave_cat_ch()">
                     <option v-for="lc in leave_cat" :value="lc">{{lc}}</option>
                   </select>
                   
@@ -115,59 +113,59 @@ https://templatemo.com/tm-570-chain-app-dev
                 
                 <div class="row mb-3 justify-content-between" v-if="leave.cat == 'ลาพักผ่อน'">
                   <div class="col-2">
-                    <label for="pp_ss_1" >วันลาพักผ่อนสะสม</label>
-                    <input type="number" class="form-control" id="pp_ss_1" placeholder="วันลาพักผ่อนสะสม" v-model="leave.pp_ss_num">
+                    <label for="p1" >วันลาพักผ่อนสะสม</label>
+                    <input type="number" class="form-control" id="p1" placeholder="วันลาพักผ่อนสะสม" v-model="leave.p1">
                   </div>
                   <div class="col-2">
-                    <label for="pp_ss_limit">วันลาคงเหลือ</label>
-                    <input type="number" disabled class="form-control" id="pp_ss_limit" placeholder="วันลาคงเหลือ" v-model="leave.pp_ss_limit">
+                    <label for="p2">วันลาคงเหลือ</label>
+                    <input type="number" disabled class="form-control" id="p2" placeholder="วันลาคงเหลือ" v-model="leave.p2">
                   </div>
                 </div>
   
                 <div class="row mb-5">
                   <div class="col">
-                    <label for="begin" >ลาตั้งแต่วันที่</label>
-                    <input type="date" class="form-control" id="begin" placeholder="ลาตั้งแต่วันที่" v-model="leave.begin" @change="leave_begin_end_ch()">
+                    <label for="date_begin" >ลาตั้งแต่วันที่</label>
+                    <input type="date" class="form-control" id="date_begin" placeholder="ลาตั้งแต่วันที่" v-model="leave.date_begin" @change="input_date_begin_end_ch()">
                   </div>
                   <div class="col">
-                    <label for="end" >ถึงวันที่</label>
-                    <input type="date" class="form-control" id="end" placeholder="ถึงวันที่" v-model="leave.end" @change="leave_begin_end_ch()">
+                    <label for="date_end" >ถึงวันที่</label>
+                    <input type="date" class="form-control" id="date_end" placeholder="ถึงวันที่" v-model="leave.date_end" @change="input_date_begin_end_ch()">
                   </div>
                   <div class="col-2">
-                    <label for="l_num">จำนวนวัน</label>
-                    <input type="number" min="0" class="form-control" id="l_num" placeholder="จำนวนวัน" v-model="leave.l_num">
+                    <label for="date_total">จำนวนวัน</label>
+                    <input type="number" min="0" class="form-control" id="date_total" placeholder="จำนวนวัน" v-model="leave.date_total">
                   </div>
                 </div>
   
                 <div v-if="leave.cat == 'ลาป่วย' || leave.cat == 'ลากิจส่วนตัว'">
                   <div class="row mb-5" >
                     <div class="col">
-                      <label for="be" >เนื่องจาก</label>
-                      <input type="text" class="form-control" id="be" placeholder="เนื่องจาก" v-model="leave.be">
+                      <label for="due" >เนื่องจาก</label>
+                      <input type="text" class="form-control" id="due" placeholder="เนื่องจาก" v-model="leave.due">
     
                     </div>
                   </div>
                   
                   <div class="row mb-3">
                     <div class="col">
-                      <label for="begin_old">ลาครั้งสุดท้ายตั้งแต่</label>
-                      <input type="date" class="form-control" id="begin_old" placeholder="ลาครั้งสุดท้ายตั้งแต่" v-model="leave.begin_old">
+                      <label for="dateO_begin">ลาครั้งสุดท้ายตั้งแต่</label>
+                      <input type="date" class="form-control" id="dateO_begin" placeholder="ลาครั้งสุดท้ายตั้งแต่" v-model="leave.dateO_begin">
                     </div>
                     <div class="col">
-                      <label for="end_old" >ลาครั้งสุดถึงวันที่</label>
-                      <input type="date" class="form-control" id="end_old" placeholder="ลาครั้งสุดถึงวันที่" v-model="leave.end_old">
+                      <label for="dateO_end" >ลาครั้งสุดถึงวันที่</label>
+                      <input type="date" class="form-control" id="dateO_end" placeholder="ลาครั้งสุดถึงวันที่" v-model="leave.dateO_end">
                     </div>
                     <div class="col-2">
-                      <label for="l_num_old">จำนวนวัน</label>
-                      <input type="number" min="0" class="form-control" id="l_num_old" placeholder="จำนวนวัน" v-model="leave.l_num_old">
+                      <label for="dateO_total">จำนวนวัน</label>
+                      <input type="number" min="0" class="form-control" id="dateO_total" placeholder="จำนวนวัน" v-model="leave.dateO_total">
                     </div>
                   </div>
                 </div>
   
                 <div class="row mb-4">
                   <div class="col-2">
-                    <label for="l_old_sum">เคยลาแล้ว</label>
-                    <input type="number" min="0" class="form-control" placeholder="เคยลาแล้ว" v-model="leave.l_old_sum">
+                    <label for="t1">เคยลาแล้ว</label>
+                    <input type="number" min="0" class="form-control" placeholder="เคยลาแล้ว" v-model="leave.t1">
                   </div>
                   <div class="col">
                     <label for="address">ระหว่างลาติดต่อได้ที่</label>
@@ -182,7 +180,7 @@ https://templatemo.com/tm-570-chain-app-dev
   
   
                 {{leave}}
-                {{sms}}
+                {{leave_old}}
                 <div class="row">
                   <button type="submit" class="btn btn-primary">Submit</button>
   
@@ -219,7 +217,7 @@ https://templatemo.com/tm-570-chain-app-dev
                     </div>
                     
                     <div class="white-button scroll-to-section ">
-                      <a href="">ประวัติการลา <i class="fab fa-apple"></i></a>
+                      <a href="#leave">ประวัติการลา <i class="fab fa-apple"></i></a>
                     </div>
                   </div>
                 </div>
@@ -239,9 +237,9 @@ https://templatemo.com/tm-570-chain-app-dev
   
 
   
-  <div id="leave">
+  <!-- <section id="leave">
     <div class="container">
-      <div  class="row">
+      <div  class="row mt-10">
         <div>ประวัติการลา</div>
         <table class="table">
           <tr>
@@ -255,68 +253,36 @@ https://templatemo.com/tm-570-chain-app-dev
             <td>3</td>
           </tr>
         </table>
+
+        {{profile}}
       </div>      
     </div>
-  </div>
+  </section> -->
 
  
   
 
   
-  <footer id="newsletter">
+  <footer id="leave">
     <div class="container">      
       <div class="row">
-        <div class="col-lg-3">
-          <div class="footer-widget">
-            <h4>Contact Us</h4>
-            <p>Rio de Janeiro - RJ, 22795-008, Brazil</p>
-            <p><a href="#">010-020-0340</a></p>
-            <p><a href="#">info@company.co</a></p>
-          </div>
+        <div class="col-lg-12">
+          <table class="table">
+            <tr>
+              <td>ttt</td>
+              <td>ttt</td>
+              <td>ttt</td>
+            </tr>
+            <tr>
+              <td>1</td>
+              <td>2</td>
+              <td>3</td>
+            </tr>
+          </table>
+          
         </div>
-        <div class="col-lg-3">
-          <div class="footer-widget">
-            <h4>About Us</h4>
-            <ul>
-              <li><a href="#">Home</a></li>
-              <li><a href="#">Services</a></li>
-              <li><a href="#">About</a></li>
-              <li><a href="#">Testimonials</a></li>
-              <li><a href="#">Pricing</a></li>
-            </ul>
-            <ul>
-              <li><a href="#">About</a></li>
-              <li><a href="#">Testimonials</a></li>
-              <li><a href="#">Pricing</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="footer-widget">
-            <h4>Useful Links</h4>
-            <ul>
-              <li><a href="#">Free Apps</a></li>
-              <li><a href="#">App Engine</a></li>
-              <li><a href="#">Programming</a></li>
-              <li><a href="#">Development</a></li>
-              <li><a href="#">App News</a></li>
-            </ul>
-            <ul>
-              <li><a href="#">App Dev Team</a></li>
-              <li><a href="#">Digital Web</a></li>
-              <li><a href="#">Normal Apps</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="footer-widget">
-            <h4>About Our Company</h4>
-            <div class="logo">
-              <img src="assets/images/white-logo.png" alt="">
-            </div>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p>
-          </div>
-        </div>
+        
+        
         <div class="col-lg-12">
           <div class="copyright-text">
             <p>Copyright © 2022 Chain App Dev Company. All Rights Reserved. 
