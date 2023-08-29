@@ -12,8 +12,9 @@ const app = Vue.createApp({
                 pp_ss_num:'',
                 pp_ss_limit:'',
                 l_num:'',
+                act:'',
             },
-            leave_old : {},
+            leave_old : '',
             loading: false,
             sms: 'sms',
         }
@@ -33,7 +34,6 @@ const app = Vue.createApp({
                 .then(response => {
                     // handle success
                     this.datas = response.data.datas
-                    this.test()
                 })
                 .catch(error =>  {
                     // handle error
@@ -44,7 +44,23 @@ const app = Vue.createApp({
                     this.loading = false;
                 });
         },
-        get_leave_old(){},
+        get_leave_old(){
+            this.loading = true;
+            this.leave.act = 'leave_old'
+            axios.post('./api/index/bila.php',{leave:this.leave})
+                .then(response => {
+                    // handle success
+                    this.leave_old = response.data.datas
+                })
+                .catch(error =>  {
+                    // handle error
+                    console.log(error);
+                })
+                .finally( ()=> {
+                    // always executed
+                    this.loading = false;
+                });
+        },
         leave_cat_ch(){},
         leave_begin_end_ch(){
             if(this.leave.begin !== '' && this.leave.end !== ''){
