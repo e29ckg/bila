@@ -9,15 +9,17 @@ include "../../config/function.php";
 
 $data = json_decode(file_get_contents("php://input"));
 
-// The request is using the POST method
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    if(!isset($_SESSION['__id'])){
-        http_response_code(200);
-        echo json_encode(array('status' => false, 'messsge' => 'Login Please..'));
-        exit;
-    }
+// if(!isset($_SESSION['__id'])){
+//     http_response_code(200);
+//     echo json_encode(array('status' => false, 'messsge' => 'Login Please..'));
+//     exit;
+// }
+// $uid = $_SESSION['__id'];
+$uid = 39;
 
-    $uid = $_SESSION['__id'];
+// The request is using the POST method
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {    
+
     $datas = array();
     $profile = '';
     $bilas = array();
@@ -56,15 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ));
         }
 
-       
-
-
         $datas = [
             "profile"   => $profile,
             "bilas"      => $bilas
         ];
-
-                        
             
         http_response_code(200);
         echo json_encode(array('status' => true, 'messsge' => 'สำเร็จ', 'datas' => $datas));
@@ -76,4 +73,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         echo json_encode(array('status' => false, 'messsge' => 'เกิดข้อผิดพลาด..' . $e->getMessage()));
         exit;
     }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $leave = $data->leave;
+
+    if($leave->act == 'leave_old'){
+        $sql = "SELECT b.*
+                FROM bila as b
+                WHERE b.user_id = :uid 
+                ORDER BY b.date_begin ASC
+                LIMIT 1";
+        $query = $conn->prepare($sql);
+        $query->bindParam('uid',$uid, PDO::PARAM_STR);
+        $query->execute();
+        $bila = $query->fetch(PDO::FETCH_OBJ);
+
+        http_response_code(200);
+        echo json_encode(array('status' => true, 'messsge' => 'สำเร็จ...leave_old', 'datas' => $bila));
+        exit;
+    }
+
+    http_response_code(200);
+    echo json_encode(array('status' => true, 'messsge' => 'สำเร็จ', 'datas' => $leave));
+    exit;
 }
