@@ -15,7 +15,7 @@ $data = json_decode(file_get_contents("php://input"));
 //     exit;
 // }
 // $uid = $_SESSION['__id'];
-$uid = 39;
+$uid = 19;
 
 // The request is using the POST method
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {    
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 WHERE u.id = :uid 
                 ORDER BY p.st ASC";
         $query = $conn->prepare($sql);
-        $query->bindParam('uid',$uid, PDO::PARAM_STR);
+        $query->bindParam('uid',$uid, PDO::PARAM_INT);
         $query->execute();
         $profile = $query->fetch(PDO::FETCH_OBJ);
 
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 ORDER BY b.running DESC,b.date_begin DESC
                 LIMIT 100";
         $query = $conn->prepare($sql);
-        $query->bindParam('uid',$uid, PDO::PARAM_STR);
+        $query->bindParam(':uid',$uid, PDO::PARAM_STR);
         $query->execute();
         $res = $query->fetchAll(PDO::FETCH_OBJ);
 
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         $datas = [
             "profile"   => $profile,
-            "bilas"      => $bilas
+            "bilas"      => $res
         ];
             
         http_response_code(200);
@@ -79,13 +79,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $leave = $data->leave;
 
     if($leave->act == 'leave_old'){
+        $cat = $leave->cat;
         $sql = "SELECT b.*
                 FROM bila as b
-                WHERE b.user_id = :uid 
-                ORDER BY b.date_begin ASC
+                WHERE b.cat = :cat 
+                    AND b.status = 1 
+                    AND b.user_id = :uid 
+                ORDER BY b.date_begin DESC
                 LIMIT 1";
         $query = $conn->prepare($sql);
-        $query->bindParam('uid',$uid, PDO::PARAM_STR);
+        $query->bindParam(':cat',$cat, PDO::PARAM_STR);
+        $query->bindParam(':uid',$uid, PDO::PARAM_INT);
         $query->execute();
         $bila = $query->fetch(PDO::FETCH_OBJ);
 
