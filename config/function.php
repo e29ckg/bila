@@ -183,7 +183,7 @@ function gcal_remove($gcal_id){
     return gcal_send_date($message_data);
     
 }
-function gcal_update($gcal_id,$name,$desc=null,$colerId=1){
+function gcal_update($gcal_id, $name, $desc=null, $colerId=1){
     $message_data = [
         "action"    => "update",
         "eventId"   => $gcal_id ,
@@ -199,7 +199,7 @@ function gcal_update($gcal_id,$name,$desc=null,$colerId=1){
 }
 
 function gcal_send_date($message_data){
-    $url = 'http://10.37.64.1/service/google/calendar/calendar.php';
+    $url = 'http://127.0.0.1/service/google/calendar/calendar.php';
     $headers = array('Method: POST', 'Content-type: application/json');
     $message_data = json_encode($message_data);
 

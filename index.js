@@ -67,6 +67,7 @@ const app = Vue.createApp({
                         this.leave.dateO_begin = this.leave_old.date_begin
                         this.leave.dateO_end = this.leave_old.date_end
                         this.leave.dateO_total = this.leave_old.date_total
+                        this.leave.due = ''
                         this.leave.p1 = 0
                         this.leave.p2 = 0
                         this.leave.t1 = parseFloat(this.leave_old.t3)
@@ -117,6 +118,7 @@ const app = Vue.createApp({
         },
         leave_new(){
             this.get_leave_old()
+            this.leave.act = 'insert'
             this.leave.date_begin = ''
             this.leave.date_end  = ''
             this.leave.date_total = 0
@@ -125,10 +127,28 @@ const app = Vue.createApp({
         b_update(idx){
             console.log('b_update.' + idx)
             this.leave = this.datas[idx]
+            this.leave.act = 'update'
             this.$refs.bt_open_modal.click()
 
         },
-        onSubmit(){},
+        onSubmit(){
+            this.loading = true;
+            axios.post('./api/index/bila.php',{leave:this.leave})
+                .then(response => {
+                    // handle success
+                    this.$refs.bt_close_modal.click()
+                    this.get_data()
+                    // alert('ok');
+                })
+                .catch(error =>  {
+                    // handle error
+                    console.log(error);
+                })
+                .finally( ()=> {
+                    // always executed
+                    this.loading = false;
+                });
+        },
         convertToThaiDate(gregorianDate) {
             // Parse the Gregorian date
             const parts = gregorianDate.split('-');

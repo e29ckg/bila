@@ -1,4 +1,7 @@
 
+<?php
+include "./core/auth.php";
+?>
 <!DOCTYPE html>
 <html lang="th">
 
@@ -75,6 +78,14 @@ https://templatemo.com/tm-570-chain-app-dev
               
               <li class="scroll-to-section"><a href="#leave">ประวัติการลา</a></li>
               <li>
+                <div >
+                  <a  href="#">
+                    <i class="far fa-edit"></i> {{profile.name}}
+                  </a>
+                </div>
+
+              </li>
+              <li>
                 <div class="gradient-button">
                   <a  href="#" @click="leave_new()" >
                     <i class="far fa-edit"></i> เขียนใบลา
@@ -101,7 +112,7 @@ https://templatemo.com/tm-570-chain-app-dev
         <div class="modal-dialog modal-xl">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">บันทึกการลา : {{leave.cat}}</h5>
+              <h5 class="modal-title" id="exampleModalLabel">บันทึกการลา @ {{profile.name}} : {{leave.cat}}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -182,8 +193,8 @@ https://templatemo.com/tm-570-chain-app-dev
   
   
   
-                <!-- {{leave}}
-                {{leave_old}} -->
+                {{leave}}
+                <!-- {{leave_old}} -->
                 <div class="row">
                   <button type="submit" class="btn btn-primary">Submit</button>
   
@@ -191,7 +202,7 @@ https://templatemo.com/tm-570-chain-app-dev
               </form>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ref="bt_close_modal">Close</button>
               <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
             </div>
           </div>
