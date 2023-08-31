@@ -1,6 +1,6 @@
 
 <?php
-// include "./core/auth.php";
+include "./core/auth.php";
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -193,7 +193,7 @@ https://templatemo.com/tm-570-chain-app-dev
   
   
   
-                {{leave}}
+                <!-- {{leave}} -->
                 <!-- {{leave_old}} -->
                 <div class="row">
                   <button type="submit" class="btn btn-primary">Submit</button>
