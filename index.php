@@ -1,6 +1,6 @@
 
 <?php
-include "./core/auth.php";
+// include "./core/auth.php";
 ?>
 <!DOCTYPE html>
 <html lang="th">
