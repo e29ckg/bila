@@ -5,15 +5,14 @@ error_reporting(E_ALL);
 // error_reporting(0);
 date_default_timezone_set("Asia/Bangkok");
 define("__GOOGLE_CALENDAR__",true);
-
-$env = 'dev'; //   dev : production 
+define("__ENV__","dev");            //   dev : production 
 
 $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "main";
 
-if($env == 'dev'){
+if(__ENV__ == 'dev'){
     $servername = "localhost";
     $username = "root";
     $password = "";

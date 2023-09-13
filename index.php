@@ -17,27 +17,31 @@ include "./core/auth.php";
 
     <title>โปรแกรมเขียนใบลา</title>
 
-    <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
-<!--
-
-TemplateMo 570 Chain App Dev
-
-https://templatemo.com/tm-570-chain-app-dev
-
--->
-
+    
+    
+    <!--
+      TemplateMo 570 Chain App Dev
+      
+      https://templatemo.com/tm-570-chain-app-dev
+      
+    -->
+    
     <!-- Additional CSS Files -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/css/templatemo-chain-app-dev.css">
     <link rel="stylesheet" href="assets/css/animated.css">
     <link rel="stylesheet" href="assets/css/owl.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
 <style>
   body {font-family: 'Prompt', sans-serif;}
+  .nav-link {
+    padding: 0;
+  }
 </style>
 
   </head>
@@ -74,29 +78,36 @@ https://templatemo.com/tm-570-chain-app-dev
             <!-- ***** Logo date_end ***** -->
             <!-- ***** Menu Start ***** -->
             <ul class="nav">
-              <li class="scroll-to-section"><a href="#top" class="active">หน้าแรก</a></li>
-              
-              <li class="scroll-to-section"><a href="#leave">ประวัติการลา</a></li>
-              <li>
-                <div >
-                  <a  href="#">
-                    <i class="far fa-edit"></i> {{profile.name}}
-                  </a>
-                </div>
-
+              <li class="nav-item">
+                <a href="#top" class="nav-link active">หน้าแรก</a>
               </li>
-              <li>
-                <div class="gradient-button">
-                  <a  href="#" @click="leave_new()" >
+              <li class="nav-item">
+                  <a  href="#" class="nav-link" @click="leave_new()" >
                     <i class="far fa-edit"></i> เขียนใบลา
                   </a>
-                </div>
-              </li> 
+              </li>               
+              <li class="nav-item">
+                <a class="nav-link" href="#leave" ref="bt_leave">ประวัติการลา</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="far fa-edit"></i> {{profile.name}}
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <!-- <li><a class="dropdown-item" href="#">Action</a></li> -->
+                  <!-- <li><a class="dropdown-item" href="#">Another action</a></li> -->
+                  <!-- <li><hr class="dropdown-divider"></li> -->
+                  <li><a href="./core/logout.php" >Logout</a></li>
+                </ul>
+              </li>
+              
+                            
             </ul>        
             <a class='menu-trigger'>
                 <span>Menu</span>
             </a>
             <!-- ***** Menu date_end ***** -->
+
           </nav>
         </div>
       </div>
@@ -113,7 +124,7 @@ https://templatemo.com/tm-570-chain-app-dev
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">บันทึกการลา @ {{profile.name}} : {{leave.cat}}</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="bt_close_modal"></button>
             </div>
             <div class="modal-body">
               <form @submit.prevent="onSubmit()">
@@ -196,13 +207,13 @@ https://templatemo.com/tm-570-chain-app-dev
                 <!-- {{leave}} -->
                 <!-- {{leave_old}} -->
                 <div class="row">
-                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <button type="submit" class="btn btn-primary">บันทึก</button>
   
                 </div>
               </form>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ref="bt_close_modal">Close</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ref="bt_close_modal" @click="bt_close_modal">Close</button>
               <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
             </div>
           </div>
@@ -278,7 +289,7 @@ https://templatemo.com/tm-570-chain-app-dev
                 <td>{{b.date_total}}</td>
                 <td>
                   <button class="btn btn-success" @click="b_update(index)">แก้ไข</button>
-                  <button class="btn ">พิมพ์</button>
+                  <button class="btn " @click="print(index)">พิมพ์</button>
                   <button>ยกเลิกการลา</button>
                 </td>
               </tr>

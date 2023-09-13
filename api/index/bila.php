@@ -14,6 +14,8 @@ if(!isset($_SESSION['__id'])){
     echo json_encode(array('status' => false, 'message' => 'Login Please..'));
     exit;
 }
+
+
 $uid = $_SESSION['__id'];
 // $uid = 19;
 
@@ -76,6 +78,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if(!isset($data)){
+        http_response_code(200);
+        echo json_encode(array('status' => false, 'message' => 'No Data..'));
+        exit;
+    }
     $leave = $data->leave;
 
     /** เรียกใบลาเก่า */
@@ -86,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 WHERE b.cat = :cat 
                     AND b.status = 1 
                     AND b.user_id = :uid 
-                ORDER BY b.date_begin DESC
+                ORDER BY b.running DESC, b.date_begin DESC
                 LIMIT 1";
         $query = $conn->prepare($sql);
         $query->bindParam(':cat',$cat, PDO::PARAM_STR);
@@ -114,16 +121,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $dateO_end  = $leave->dateO_end;
         $dateO_total = $leave->dateO_total;
         $address    = $leave->address;
-        $t1 = $leave->t1;
-        $t2 = $leave->t2;
-        $t3 = $leave->t3;
+        $t1 = (float)$leave->t1;
+        $t2 = (float)$leave->date_total;
+        $t3 = $t1 + $t2;
         $comment = $leave->comment;
+        $date_create = date("Y-m-d");
         $status = 1;
 
+        $sql_running = "SELECT r
+                        FROM running
+                        WHERE name = 'bila'";
+        $query_r = $conn->prepare($sql_running);
+
+        if ($query_r->execute()) {
+            $r = $query_r->fetch(PDO::FETCH_OBJ);
+            $running = $r->r + 1;
+
+            $sql = "UPDATE running SET
+                    r = :running
+                WHERE name = 'bila'";
+
+            $query = $conn->prepare($sql);
+            $query->bindParam(':running', $running, PDO::PARAM_INT);
+            $query->execute();
+        }
+
+
         $sql = "INSERT INTO bila(running, user_id, cat, p1, p2, date_begin, date_end, date_total, 
-                    due, dateO_begin, dateO_end, dateO_total, address, t1, t2, t3, comment, `status`) 
+                    due, dateO_begin, dateO_end, dateO_total, address, t1, t2, t3, comment, date_create, `status`) 
                 VALUE(:running, :user_id, :cat, :p1, :p2, :date_begin, :date_end, :date_total, 
-                    :due, :dateO_begin, :dateO_end, :dateO_total, :address, :t1, :t2, :t3, :comment, :status);";
+                    :due, :dateO_begin, :dateO_end, :dateO_total, :address, :t1, :t2, :t3, :comment, :date_create, :status);";
         $query = $conn->prepare($sql);
         $query->bindParam(':running', $running, PDO::PARAM_INT);
         $query->bindParam(':user_id', $user_id, PDO::PARAM_INT);
@@ -142,6 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $query->bindParam(':t2', $t2, PDO::PARAM_STR);
         $query->bindParam(':t3', $t3, PDO::PARAM_STR);
         $query->bindParam(':comment', $comment, PDO::PARAM_STR);
+        $query->bindParam(':date_create', $date_create, PDO::PARAM_STR);
         $query->bindParam(':status', $status, PDO::PARAM_INT);
         $query->execute();
 
@@ -164,10 +192,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $dateO_end  = $leave->dateO_end;
         $dateO_total = $leave->dateO_total;
         $address    = $leave->address;
-        $t1 = $leave->t1;
-        $t2 = $leave->t2;
-        $t3 = $leave->t3;
+        $t1 = (float)$leave->t1;
+        $t2 = (float)$leave->date_total;
+        $t3 = $t1 + $t2;
         $comment = $leave->comment;
+        $date_create = date("Y-m-d");
         $status = 1;
         $id = $leave->id;
 
@@ -189,6 +218,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     t2 = :t2,
                     t3 = :t3,
                     comment = :comment,
+                    date_create = :date_create,
                     status = :status
                 WHERE id = :id";
 
@@ -212,6 +242,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $query->bindParam(':t2', $t2, PDO::PARAM_STR);
         $query->bindParam(':t3', $t3, PDO::PARAM_STR);
         $query->bindParam(':comment', $comment, PDO::PARAM_STR);
+        $query->bindParam(':date_create', $date_create, PDO::PARAM_STR);
         $query->bindParam(':status', $status, PDO::PARAM_INT);
         $query->bindParam(':id', $id, PDO::PARAM_INT);
 
@@ -230,9 +261,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     }
 
-
-
+    
     http_response_code(200);
     echo json_encode(array('status' => true, 'message' => 'สำเร็จ', 'datas' => $leave));
     exit;
 }
+

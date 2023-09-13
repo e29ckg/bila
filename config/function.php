@@ -63,6 +63,31 @@ function DateThai_MY($strDate)
     $strMonthThai=$strMonthCut[$strMonth];
     return "$strMonthThai $strYear";
 }
+function DateThai_Y($strDate)
+{
+    if($strDate == ''){
+        return "-";
+    }
+    return date("Y",strtotime($strDate))+543;
+}
+function DateThai_D($strDate)
+{
+    if($strDate == ''){
+        return "-";
+    }    
+    return date("j",strtotime($strDate));
+}
+function DateThai_M($strDate)
+{
+    if($strDate == ''){
+        return "-";
+    }   
+    $strMonth= date("n",strtotime($strDate)); 
+    $strMonthCut = Array("","มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม",
+                        "สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
+   
+    return $strMonthCut[$strMonth];
+}
 
 function generateRandomString($length = 20) {
     return substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length);
