@@ -26,6 +26,7 @@ const app = Vue.createApp({
                 act:'',
             },
             leave_old : '',
+            st:['รอดำเนินการ','อยู่ระหว่างตรวจสอบ','รออนุมัติ','เรียบร้อย','ยกเลิก'],
             loading: false,
             sms: 'sms',
         }
@@ -166,7 +167,51 @@ const app = Vue.createApp({
                     });
             }else{
                 alert('กรุณากรอกวันที่ลา');
+                this.loading = false;
             }
+
+        },
+        odCancel(idx){
+            // this.loading = true;
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, cancel it!'
+              }).then((result) => {
+                if (result.isConfirmed) {
+
+                    this.leave = this.datas[idx]
+                    this.leave.act = 'cancel'
+                    axios.post('./api/index/bila.php',{leave:this.leave})
+                        .then(response => {
+                            // handle success
+                            this.$refs.bt_leave.click()
+                            this.get_data()
+                            // alert('ok');
+                        })
+                        .catch(error =>  {
+                            // handle error
+                            console.log(error);
+                        })
+                        .finally( ()=> {
+                            // always executed
+                            this.loading = false;
+                        });
+
+                        Swal.fire(
+                            'Cancel!',
+                            'Your file has been deleted.',
+                            'success'
+                        )
+        
+                }
+              })
+              
+            
 
         },
         bt_close_modal(){
@@ -288,6 +333,7 @@ const app = Vue.createApp({
 
             return holidays;
         }
+        
     }
 })
 

@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $sql = "SELECT b.*
                 FROM bila as b
                 WHERE b.cat = :cat 
-                    AND b.status = 1 
+                    AND b.status <> 'ยกเลิก' 
                     AND b.user_id = :uid 
                 ORDER BY b.running DESC, b.date_begin DESC
                 LIMIT 1";
@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $t3 = $t1 + $t2;
         $comment = $leave->comment;
         $date_create = date("Y-m-d");
-        $status = 1;
+        $status = 'รอดำเนินการ';
 
         $sql_running = "SELECT r
                         FROM running
@@ -197,7 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $t3 = $t1 + $t2;
         $comment = $leave->comment;
         $date_create = date("Y-m-d");
-        $status = 1;
+        $status = 'รอดำเนินการ';
         $id = $leave->id;
 
         $sql = "UPDATE bila SET
@@ -243,6 +243,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $query->bindParam(':t3', $t3, PDO::PARAM_STR);
         $query->bindParam(':comment', $comment, PDO::PARAM_STR);
         $query->bindParam(':date_create', $date_create, PDO::PARAM_STR);
+        $query->bindParam(':status', $status, PDO::PARAM_INT);
+        $query->bindParam(':id', $id, PDO::PARAM_INT);
+
+        // Execute the update query and check for errors
+        if ($query->execute()) {
+            // The update was successful
+            http_response_code(200);
+            echo json_encode(array('status' => true, 'message' => 'Update successful!'));
+            exit;
+        } else {
+            // An error occurred
+            http_response_code(200);
+            echo json_encode(array('status' => false, 'message' => 'Update failed: '. implode(", ", $query->errorInfo()), 'datas' => $leave));
+            exit;
+        }
+
+    }
+    if($leave->act == 'cancel'){
+        $status = 'ยกเลิก';
+        $id = $leave->id;
+
+        $sql = "UPDATE bila SET
+                    status = :status
+                WHERE id = :id";
+
+        $query = $conn->prepare($sql);
+
+        // Bind parameters as before        
         $query->bindParam(':status', $status, PDO::PARAM_INT);
         $query->bindParam(':id', $id, PDO::PARAM_INT);
 

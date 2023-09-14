@@ -4,9 +4,10 @@ include "./core/auth.php";
 ?>
 <!DOCTYPE html>
 <html lang="th">
-
   <head>
 
+    <title>โปรแกรมเขียนใบลา</title>   
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
@@ -14,10 +15,7 @@ include "./core/auth.php";
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
-
-    <title>โปรแกรมเขียนใบลา</title>
-
-    
+    <link rel="stylesheet" href="./node_modules/sweetalert2/dist/sweetalert2.min.css">
     
     <!--
       TemplateMo 570 Chain App Dev
@@ -35,16 +33,19 @@ include "./core/auth.php";
     
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
-<style>
-  body {font-family: 'Prompt', sans-serif;}
-  .nav-link {
-    padding: 0;
-  }
-</style>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet">
+    <style>
+      body {font-family: 'Prompt', sans-serif;}
+      .nav-link {
+        padding: 0;
+      }
+      .background-header .nav-link a:hover {
+      color: #4a33bf !important;
+    }
+    </style>
 
-  </head>
+</head>
 
 <body>
   <div id="app" >
@@ -91,7 +92,7 @@ include "./core/auth.php";
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="far fa-edit"></i> {{profile.name}}
+                  <i class="far fa-edit"></i> {{profile.fname + profile.name + ' ' + profile.sname}}
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <!-- <li><a class="dropdown-item" href="#">Action</a></li> -->
@@ -272,25 +273,27 @@ include "./core/auth.php";
         </div>
         <div class="col-lg-12">
           <table class="table">
-            <thead>
+            <thead class="text-center">
                 <td>รหัสใบลา</td>
                 <td>ปีงบประมาณ</td>
                 <td>ประเภทการลา</td>
-                <td>ระหวางวันที่</td>
+                <td>ระหว่างวันที่</td>
                 <td>จำนวนวัน</td>
+                <td>สถานะ</td>
                 <td>Act</td>
             </thead>
             <tbody>
-              <tr v-for="b,index in datas">
+              <tr v-for="b,index in datas" class="text-center">
                 <td>{{b.running}}</td>
                 <td>{{fiscalyear(b.date_begin)}}</td>
                 <td>{{b.cat}}</td>
                 <td>{{convertToThaiDate(b.date_begin)}} - {{convertToThaiDate(b.date_end)}}</td>
                 <td>{{b.date_total}}</td>
-                <td>
-                  <button class="btn btn-success" @click="b_update(index)">แก้ไข</button>
-                  <button class="btn " @click="print(index)">พิมพ์</button>
-                  <button>ยกเลิกการลา</button>
+                <td>{{b.status}}</td>
+                <td class="text-start">
+                  <button class="btn btn-warning me-2 mb-1" @click="b_update(index)">แก้ไข</button>
+                  <button class="btn btn-primary me-2 mb-1" @click="print(index)">พิมพ์</button>
+                  <button class="btn btn-block btn-danger" v-if="b.status === 'รอดำเนินการ'" @click="odCancel(index)">ยกเลิกการลา</button>
                 </td>
               </tr>
 
@@ -328,6 +331,7 @@ include "./core/auth.php";
   <script src="assets/js/imagesloaded.js"></script>
   <script src="assets/js/popup.js"></script>
   <script src="assets/js/custom.js"></script>
+  <script src="./node_modules/sweetalert2/dist/sweetalert2.all.min.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
